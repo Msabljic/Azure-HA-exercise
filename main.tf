@@ -62,6 +62,12 @@ resource "azurerm_lb_probe" "probe" {
   port = 80
 }
 
+#backend pool
+resource "azurerm_lb_backend_address_pool" "adpool"{
+  loadbalancer_id = azurerm_lb.lb.id
+  name = "backendaddresspool"
+}
+
 #lbrules 
 resource "azurerm_lb_rule" "lbru" {
   resource_group_name = azurerm_resource_group.azrg.name
@@ -72,12 +78,7 @@ resource "azurerm_lb_rule" "lbru" {
   backend_port = 80
   frontend_ip_configuration_name = "Frontdoorip"
   probe_id = azurerm_lb_probe.probe.id
-}
-
-#backend pool
-resource "azurerm_lb_backend_address_pool" "adpool"{
-  loadbalancer_id = azurerm_lb.lb.id
-  name = "backendaddresspool"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.adpool.id
 }
 
 #NSG and association
